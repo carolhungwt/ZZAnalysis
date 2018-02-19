@@ -43,6 +43,8 @@
 #include "ZZ4lConfigHelper.h"
 #include "HZZ4lNtupleFactory.h"
 
+#include "KinZfitter/HelperFunction/interface/HelperFunction.h"
+
 #include "Math/VectorUtil.h"
 #include "TH1.h"
 
@@ -73,6 +75,8 @@ namespace {
   Float_t ZPhi = 0;
   Short_t ZFlav = 0;
   std::vector<float> LepPt;
+  std::vector<float> LepPtErr;
+  std::vector<float> LepPtErrCorr;
   std::vector<float> LepEta;
   std::vector<float> LepPhi;
   std::vector<short> LepLepId;
@@ -523,6 +527,8 @@ void ZNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool evtPa
   userdatahelpers::getSortedZLeptons(cand, leptons, labels, fsrPhot, fsrIndex);
   
   LepPt.clear();
+  LepPtErr.clear();
+  LepPtErrCorr.clear();
   LepEta.clear();
   LepPhi.clear();
   LepLepId.clear();
@@ -545,6 +551,8 @@ void ZNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool evtPa
 
     //Fill the info on the lepton candidates  
     LepPt .push_back( leptons[i]->pt() );
+    LepPtErr.push_back(pterrcorr(leptons[i],0,0));
+    LepPtErrCorr.push_back(pterrcorr(leptons[i],0,1));
     LepEta.push_back( leptons[i]->eta() );
     LepPhi.push_back( leptons[i]->phi() );
     LepLepId.push_back( leptons[i]->pdgId() );
