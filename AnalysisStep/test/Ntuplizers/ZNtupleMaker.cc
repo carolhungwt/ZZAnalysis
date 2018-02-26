@@ -44,6 +44,7 @@
 #include "HZZ4lNtupleFactory.h"
 
 #include "KinZfitter/HelperFunction/interface/HelperFunction.h"
+#include "KinZfitter/HelperFunction/src/HelperFunction.cc"
 
 #include "Math/VectorUtil.h"
 #include "TH1.h"
@@ -179,6 +180,7 @@ private:
   Float_t getAllWeight(const reco::Candidate* Lep) const;
 
   // ----------member data ---------------------------
+  HelperFunction* helperFunc_;
   ZZ4lConfigHelper myHelper;
   std::string theCandLabel;
   TString theFileName;
@@ -543,6 +545,8 @@ void ZNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool evtPa
   LepCombRelIsoPF.clear();
   LepCombRelIsoPFPreFSR.clear();
 
+  helperFunc_ = new HelperFunction(!isMC);
+
   for (unsigned int i=0; i<leptons.size(); ++i){
     short lepFlav = std::abs(leptons[i]->pdgId());
 
@@ -551,8 +555,8 @@ void ZNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool evtPa
 
     //Fill the info on the lepton candidates  
     LepPt .push_back( leptons[i]->pt() );
-    LepPtErr.push_back(pterrcorr(leptons[i],0,0));
-    LepPtErrCorr.push_back(pterrcorr(leptons[i],0,1));
+    LepPtErr.push_back(helperFunc_->pterrcorr(leptons[i],0,0));
+    LepPtErrCorr.push_back(helperFunc_->pterrcorr(leptons[i],0,1));
     LepEta.push_back( leptons[i]->eta() );
     LepPhi.push_back( leptons[i]->phi() );
     LepLepId.push_back( leptons[i]->pdgId() );
